@@ -4,6 +4,7 @@ nil
 @todo English translation
 
 Geschichte & Ziel
+---
 @todo Extending history & goal
 
 Dieses Projekt wurde ins Leben gerufen, um meine Kenntnisse der objekt-orientierten Programmierung in PHP zu vertiefen.
@@ -14,9 +15,11 @@ zudem eine Art ´immersive usability´ zu erzeugen, welches ebenfalls bereits um
 Detail geplant wurde, jedoch die Ressourcen des damaligen Teams nicht zur Umsetzung ausreichten.
 
 Bootstrap
+---
 @todo Adding bootstrap philosophy
 
 thevortex
+---
 @todo Adding thevortex concepts
 
 

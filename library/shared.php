@@ -1,12 +1,20 @@
 <?php
-/**
- * @todo File 'shared.php'
- * 
- * @category	Framework core
- * @author		Frank Hoechel <hoechel@gmail.com>
- * @copyright	Copyright (c) 2011/2012 NIL
- */
+if (!($magic_quotes = self::Remove_Magic_Quotes()))
+{
+    throw new Exception('Can not remove magic quotes.');
+}
 
-$magicQuotes = self::RemoveMagicQuotes();
-$unregisterGlobals = self::UnregisterGlobals();
-$errorReporting = self::SetErrorReporting();
+if (!($unregister_globals = self::Unregister_Globals()))
+{
+    throw new Exception('Can not unregister globals.');
+} 
+
+if (!($set_error_reporting = self::Set_Error_Reporting()))
+{
+    throw new Exception('Can not set error reporting.');
+}
+
+if (!($set_error_reporting = self::Set_Error_Reporting()))
+{
+    throw new Exception('Can not set error reporting.');
+}

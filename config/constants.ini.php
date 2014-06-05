@@ -1,5 +1,5 @@
 <?
-define('DEVELOPMENT_MODE', TRUE);
+define('DEVELOPMENT_MODE', FALSE);
 define('SHARED_FILENAME', 'shared');
 define('FILE_EXTENSION', 'php');
 define('APPLICATION_DIRECTORY', 'application');

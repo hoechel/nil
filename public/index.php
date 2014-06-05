@@ -1,402 +1,434 @@
 <?php
-interface System_Init
+abstract class Bootstrap
 {
-    const CONFIG_DIRECTORY = 'config';
-    const INIT_EXTENSION = 'ini.php';
-    const CONSTANTS_INIT_FILENAME = 'constants';
-    const CONTROLLER_INIT_FILENAME = 'controller';
-    const MODEL_INIT_FILENAME = 'model';
-    
-    public static function Get_System_Root($execution = __FILE__);
-    public static function Get_Project_Name($root = FALSE);  
-}
-
-interface System_Config
-{
-    const DEFAULT_BOOTSTRAP_FILENAME = 'bootstrap';
-    const DEFAULT_ERROR_FILENAME = 'error';
-    const DEFAULT_EXCEPTION_FILENAME = 'exceptions';
-    const DEFAULT_FILE_EXTENSION = 'php'; 
-    const DEFAULT_CLASS_EXTENSION = 'class.php';
-    const DEFAULT_LOG_EXTENSION = 'log';
-    const DEFAULT_CONTROLLER_POSTFIX = '_controller';          
-}
-
-interface System_Debug
-{
-    public static function Dump_System_Constants();
-    
-    public static function Handle_Exception
+    const CONFIG_DIR = 'config';
+    const LIBRARY_DIR = 'library';
+    const CONSTANTS_FILE = 'constants';
+    const BOOTSTRAP_FILE = 'bootstrap';
+    const INI_EXT = 'ini.php';
+    const PHP_EXT = 'php';
+    const CONTROLLER_FILE = 'controller';
+    const MODEL_FILE = 'model';
+    const DATABASE_FILE = 'database';
+    const CLASS_INI_EXT = 'class.ini.php';
+     
+    final public static function Set_Error_Reporting
     (
-        Exception $catched_exception
-    );    
-}
-
-interface System_Control
-{
-    public static function Require_Files($files, $extensions = FALSE);
-    public static function Call_Hook();   
-}
-
-abstract class Value_Control
-{
-    public static function Strip_Slashes_From_Array($array)
+        $errors_file = FALSE,
+        $dev_mode = DEV_MODE
+    )
     {
-        foreach ($array AS $key => $value)
+        if ( !$errors_file )
         {
-            $value = stripslahes($value);
-            $array[$key] = $value;
+            $errors_file = Adjustment::Chain_Path(array
+            (
+                ROOT,
+                TEMP_DIR,
+                LOGS_DIR,
+                Adjustment::Chain_Filename
+                (
+                    ERRORS_FILE,
+                    LOG_EXT
+                )
+            ));
         }
         
-        return $array;    
+        error_reporting(E_ALL);
+        
+        if ( $dev_mode === TRUE )
+        {
+            ini_set('display_errors', 'On');
+        }
+        else
+        {
+            $create_file = File_System::Create_Files(array ($errors_file));
+            
+            ini_set('display_errors', 'Off');
+            ini_set('log_errors', 'On');
+            ini_set('error_log', $errors_file);
+        }
+               
+        return TRUE;    
+    }   
+     
+    final public static function Remove_Magic_Quotes
+    (
+        $args = array('_COOKIE', '_GET', '_POST')
+    )
+    {        
+        if ( $magic_quotes = get_magic_quotes_gpc() )
+        {
+            foreach ( $args AS $array )
+            {
+                if ( isset (${$array}) )
+                {
+                    ${$array} = Adjustment::Strip_Slashes_From_Array
+                    (
+                        ${$array}
+                    );     
+                }
+            }
+        }
+        
+        return $magic_quotes;          
+    }
+     
+    final public static function Unregister_Globals
+    (
+        $exceptions = array
+        (
+            'GLOBALS',
+            '_COOKIE',
+            '_ENV',
+            '_FILES',
+            '_GET',
+            '_POST',
+            '_REQUEST',
+            '_SERVER',
+            '_SESSION')
+    )
+    {
+        if ( $register_globals = ini_get('register_globals') )
+        {
+            foreach ( $GLOBALS AS $key => $value )
+            {
+                if
+                (
+                    isset ($GLOBALS[$key]) AND
+                    !in_array($key, $exceptions)
+                )
+                {
+                    unset ($GLOBALS[$key]);
+                }
+            }
+        }
+        
+        return $register_globals;    
+    }
+     
+    final public static function Call_Hook()
+    {
+        $controller_class = ucwords(PROJECT_NAME) .
+            ucwords(CONTROLLER_SUFFIX);
+        $controller = new $controller_class();
+        
+        return TRUE;
     }    
 }
-
-abstract class System_Default
-implements System_Init, System_Config, System_Debug, System_Control
+ 
+abstract class Debugger
 {
-    protected static $init_file = PROJECT_NAME;
-    
-    abstract static function __autoload($class_name);
-    
-    public static function Get_System_Root($execution = __FILE__)
+    const DEF_TEMP_DIR = 'temp';
+    const DEF_LOGS_DIR = 'logs';
+    const DEF_EXCEPTIONS_FILE = 'exceptions';
+    const DEF_LOG_EXT = 'log';
+     
+    final public static function Catch_Exception($exception)
     {
-        $mirrored_directory_separator = (DIRECTORY_SEPARATOR != '/')
-            ? '/'
-            : '\\';
-        
-        $path = str_replace
-        (
-            str_replace
-            (
-                $mirrored_directory_separator,
-                DIRECTORY_SEPARATOR,
-                $_SERVER['DOCUMENT_ROOT']
-            ),
-            '',
-            $execution
-        );
-        
-        if ($path[0] == DIRECTORY_SEPARATOR)
+        $message = '[' . date('Y-m-d H:i:s') . '] ' .
+            'Catched Exception in ' .
+            $exception->getFile() . ' on Line ' .
+            $exception->getLine() . ': ' .
+            $exception->getMessage() . '.' .
+            PHP_EOL;
+            
+        if ( defined('DEV_MODE') AND DEV_MODE )
         {
-            $path = substr($path, 1);
-        }
-
-        $depth = substr_count($path, DIRECTORY_SEPARATOR);
-        $root = $execution;
-        
-        for ($i = 0; $i < $depth; $i++)
-        {
-            $root = dirname($root);
-        }
-        
-        return $root;
-    }
-    
-    public static function Get_Project_Name($root = FALSE)
-    {
-        if (!$root)
-        {
-            $root = (defined('ROOT'))
-                ? ROOT
-                : self::Get_System_Root();
-        }
-        
-        if (is_dir($root))
-        {
-            $project_name = basename($root);
+            exit ($message);
         }
         else
         {
-            throw new Exception
-            (
-                'System\'s root ' . $root . ' is not a directory.'
-            );
-        }
-        
-        return $project_name;      
-    }
-    
-    public static function Dump_System_Constants()
-    {
-        if (defined('DEVELOPMENT_MODE') AND DEVELOPMENT_MODE)
-        {
-            $reflect = new ReflectionClass(get_class());
-            $class_constants = $reflect->getConstants();
-            $defined_constants = get_defined_constants(TRUE);
+            if ( defined('EXCEPTIONS_FILE') )
+            {
+                $root = ROOT;
+                $temp_dir = TEMP_DIR;
+                $logs_dir = LOGS_DIR;
+                $exceptions_file = EXCEPTIONS_FILE;
+                $log_ext = LOG_EXT;
+            }
+            else
+            {
+                $root = File_System::Get_Root();
+                $temp_dir = self::DEF_TEMP_DIR;
+                $logs_dir = self::DEF_LOGS_DIR;
+                $exceptions_file = self::DEF_EXCEPTIONS_FILE;
+                $log_ext = self::DEF_LOG_EXT;    
+            }
             
-            $dump_constants = var_dump
+            $exceptions_file = Adjustment::Chain_Path
             (
-                array_merge
+                array
                 (
-                    $class_constants,
-                    $defined_constants['user']
+                    $root,
+                    $temp_dir,
+                    $logs_dir,
+                    Adjustment::Chain_Filename($exceptions_file, $log_ext)
                 )
             );
-        }
-        else
-        {
-            $dump_constants = FALSE;
             
-            throw new Exception('Development mode is not running.');
-        }
-        
-        return $dump_constants;
-    }
-    
-    public static function Handle_Exception(Exception $catched_exception)
-    {
-        $exception_message =
-            '[' . date('Y-m-d H:i:s'). '] Catched Exception in ' .
-            $catched_exception->getFile() . ' on Line ' .
-            $catched_exception->getLine() . ': ' .
-            $catched_exception->getMessage() . PHP_EOL;
-            
-        if (defined('DEVELOPMENT_MODE') AND DEVELOPMENT_MODE)
-        {
-            exit ($exception_message);
-        }
-        else
-        {
-            $exception_log_file = (defined('LOG_PATH'))
-                ? LOG_PATH . DIRECTORY_SEPARATOR
-                : self::Get_System_Root() . DIRECTORY_SEPARATOR;
-            
-            $exception_log_file .=
+            File_System::Append_To_Files
             (
-                defined('EXCEPTION_FILENAME') AND
-                defined('LOG_EXTENSSION')
-            )
-                ? self::Add_Extension(EXCEPTION_FILENAME, LOG_EXTENSION)
-                : self::Add_Extension
-                (
-                    self::DEFAULT_EXCEPTION_FILENAME,
-                    self::DEFAULT_LOG_EXTENSION
-                );
-            
-            $handle = fopen($exception_log_file, 'a');
-            
-            fwrite($handle, $exception_message);
-            fclose($handle);
+                array ($exceptions_file => $message)
+            );
             
             exit ();   
         }
         
         return TRUE;
     }
-    
-    public static function Require_Files($files, $extensions = FALSE)
+     
+    final public static function Dump_Constants($object = NULL)
     {
-        if (!is_array($files))
+        if ( defined('DEV_MODE') AND DEV_MODE )
         {
-            $files = array ($files);
+            $reflect = new ReflectionClass(get_class($object));
+            $class_constants = $reflect->getConstants();
+            $defined_constants = get_defined_constants(TRUE);
+            $dump_constants = var_dump
+            (
+                array_merge($class_constants, $defined_constants['user'])
+            );
+        }
+        else
+        {
+            $message = Message_Stock::E_NO_DEV_MODE;
+            
+            throw new Exception($message);
         }
         
-        if (!$extensions)
+        return $dump_constants;    
+    }
+}
+ 
+abstract class File_System
+{   
+    final public static function Get_Project_Name($root = FALSE)
+    {
+        if ( !$root )
         {
-            $extensions = (defined('FILE_EXTENSION'))
-                ? FILE_EXTENSION
-                : self::DEFAULT_FILE_EXTENSION;
-            
-            $extensions = array ($extensions);    
+            $root = ( defined('ROOT') )
+                ? ROOT
+                : self::Get_Root();    
         }
-        elseif (!is_array($extensions) OR count($extensions) == 1)
+            
+        if ( is_dir($root) )
         {
-            $saved_extension = (!is_array($extensions))
-                ? $extensions
-                : $extensions[0];
+            $project_name = basename($root);
+        }
+        else
+        {
+            $message = Message_Stock::E_NO_DIR;
                 
-            $extensions = array ();
-            
-            for ($i = 0; $i < count($files); $i++)
-            {
-                array_push($extensions, $saved_extension);
-            }    
+            throw new Exception(vsprintf($message, array ($root)));  
         }
         
-        $file_system = self::Map_File_System();
-        
-        $files = array_map
+        return $project_name;
+    }
+     
+    final public static function Get_Root($path = __FILE__)
+    {
+        $root = $path;
+        $path = str_replace
         (
-            array ('self', 'Add_Extension'),
-            $files,
-            $extensions
-        );
+            Adjustment::Level_Out_Path($_SERVER['DOCUMENT_ROOT']),
+            NULL, Adjustment::Level_Out_Path($path)
+        ); 
+        $n = substr_count($path, DIRECTORY_SEPARATOR);
+
+        for ( $i = 0; $i < $n; $i++ )
+        {
+            $root = dirname($root);
+        }
         
-        foreach ($files AS $data)
+        return $root;
+    }
+     
+    final public static function Require_Files($files)
+    {
+        $file_system = self::Map_File_System();
+
+        foreach ( $files AS $data )
         {
             $needle = array_map('preg_quote', array ($data));
             
-            foreach($needle AS $pattern)
+            foreach ( $needle AS $pattern )
             {
-                if ($match = preg_grep('/' . $pattern . '/', $file_system))
+                $match = preg_grep('/' . $pattern . '/', $file_system);
+                
+                foreach ( $match AS $file )
                 {
-                    foreach ($match AS $file)
+                    if ( file_exists($file) )
                     {
-                        require_once $file;
+                        require_once $file;    
                     }
+                    else
+                    {
+                        $message = Message_Stock::E_NO_FILE;
                     
+                        throw new Exception
+                        (
+                            vsprintf($message, array ($data))
+                        );   
+                    } 
                 }
-                else
-                {
-                    throw new Exception
-                    (
-                        'Required file ' . $data . ' not found in system.'
-                    );    
-                }    
             }
         }
         
-        return TRUE;   
+        return TRUE;    
     }
-    
-    public static function Call_Hook()
+     
+    final public static function Copy_Files
+    (
+        $args,
+        $file_protection = FALSE
+    )
     {
-        $controller = PROJECT_NAME;
-        $action = '__construct';
-        $query = NULL;
-        
-        $mirrored_directory_separator = (DIRECTORY_SEPARATOR != '/')
-            ? '/'
-            : '\\';
-        
-        if (array_key_exists('PATH_INFO', $_SERVER))
+        foreach ( $args AS $file )
         {
-            $url = explode
-            (
-                $mirrored_directory_separator,
-                pathinfo
-                (
-                    $_SERVER['PATH_INFO'],
-                    PATHINFO_DIRNAME
-                )
-            );
-        
-            if (!isset ($url[1]))
+            $source = $file[0];
+            $target = $file[1];
+
+            if ( file_exists($target) AND $file_protection )
             {
-                $controller = pathinfo
-                (
-                    $_SERVER['PATH_INFO'],
-                    PATHINFO_FILENAME
-                );
-            }
-            elseif(!isset ($url[2]))
-            {
-                array_shift($url);
+                $message = Message_Stock::E_FILE_PROTECTED;
                 
-                $controller = $url[0];
-                
-                $action =  pathinfo
-                (
-                    $_SERVER['PATH_INFO'],
-                    PATHINFO_FILENAME
-                );
+                throw new Exception(vsprintf($message, array ($target)));  
             }
             else
             {
-                array_shift($url);
+                $handle = fopen($target, 'w');
                 
-                $controller = $url[0];
-                
-                array_shift($url);
-                
-                $action = $url[0];
-                
-                $query =  pathinfo
-                (
-                    $_SERVER['PATH_INFO'],
-                    PATHINFO_FILENAME
-                );     
-            }
-        }
-            
-        $model = $controller;
-        
-        $controller .= (defined('CONTROLLER_POSTFIX'))
-            ? CONTROLLER_POSTFIX
-            : self::DEFAULT_CONTROLLER_POSTFIX;
-            
-        $mvc = new $controller($model);
-        
-        if (!(method_exists($controller, $action)))
-        {
-            throw new Exception
-            (
-                'Method ' . $action .
-                ' does not exist in class ' .
-                $controller . '.'
-            );
-        }
-        
-        return TRUE;
-    }
-    
-    protected static function Add_Extension($file, $extension)
-    {
-        $file .= '.' . $extension;
-        
-        return $file;
-    }
-    
-    protected static function Init_Project_File
-    (
-        $filename,
-        $path,
-        $extension,
-        $init_file
-    )
-    {
-        $file = $path . self::Add_Extension($filename, $extension);
-
-        if (!file_exists($file))
-        {
-            $handle = fopen($file, 'w');
-            $data = file($init_file);
-            
-            fwrite($handle, preg_replace
-            (
-                '/{PROJECT_NAME}/',
-                ucwords(PROJECT_NAME),
-                implode($data)
-            ));
-            
-            fclose($handle);    
-        }
-    }
-    
-    private function Map_File_System
-    (
-        $exclusion = array ('.', '..'),
-        $parent = FALSE
-    )
-    {
-        if (!$parent)
-        {
-            $parent = (defined('ROOT'))
-                ? ROOT
-                : self::Get_System_Root();
-        }
-        
-        $file_system = array ();
-        $handle = opendir($parent . DIRECTORY_SEPARATOR);
-        
-        while (($res = readdir($handle)) !== FALSE)
-        {
-            if (!in_array($res, $exclusion))
-            {
-                $data = $parent . DIRECTORY_SEPARATOR . $res;
-                
-                if (is_dir($data))
+                if ( file_exists($source) )
                 {
-                    $file_system = array_merge_recursive
+                    $data = file($source);
+                    
+                    if ( defined('DATABASE_SERVER') )
+                    {
+                        foreach ( $data AS $line => $value )
+                        {
+                            $data[$line] = preg_replace
+                            (
+                                '/{DATABASE_SERVER}/',
+                                DATABASE_SERVER,
+                                $data[$line]
+                            );    
+                        }
+                        
+                    }
+
+                    fwrite
                     (
-                        $file_system,
-                        self::Map_File_System($exclusion, $data)
+                        $handle,
+                        preg_replace
+                        (
+                            '/{PROJECT_NAME}/',
+                            ucwords(PROJECT_NAME),
+                            implode($data)
+                        )
                     );
                 }
                 else
                 {
-                    array_push($file_system, $data);
+                    $message = Message_Stock::E_NO_FILE;
+                
+                    throw new Exception
+                    (
+                        vsprintf($message, array ($source))
+                    );      
+                }
+                
+                fclose($handle);    
+            } 
+        }
+
+        return TRUE;
+    }
+     
+    final public static function Create_Files($args, $exception = FALSE)
+    {
+        foreach ( $args AS $file )
+        {
+            if ( !file_exists($file) )
+            {
+                $handle = fopen($file, 'w');
+                
+                fclose($handle);
+            }
+            elseif ( $exception )
+            {
+                $message = Message_Stock::E_FILE_EXISTS;
+                
+                throw new Exception
+                (
+                    vsprintf($message, array ($file))
+                );     
+            } 
+        }
+        
+        return TRUE;
+    }
+     
+    final public static function Append_To_Files($args)
+    {
+        foreach ( $args AS $file => $appendix )
+        {
+            $handle = fopen($file, 'a');
+            
+            fwrite($handle, $appendix);
+            fclose($handle);
+        }
+
+        return TRUE;
+    }
+    
+    final public static function Load_Files_To_String($array = array ())
+    {
+        $files_to_string = NULL;
+        
+        foreach ( $array AS $file )
+        {
+            if ( file_exists($file) )
+            {
+                $data = implode(file($file));
+                $files_to_string .= $data . PHP_EOL;
+            }
+            else
+            {
+                $message = Message_Stock::E_NO_FILE;
+                
+                throw new Exception(vsprintf($message, array ($file)));
+            }
+        }
+        
+        return $files_to_string;
+    }
+     
+    final private static function Map_File_System
+    (
+        $exclusion = array ('.', '..'),
+        $parent = ROOT
+    )
+    {       
+        $file_system = array ();
+        $handle = opendir($parent . DIRECTORY_SEPARATOR);
+        
+        while ( ($data = readdir($handle)) !== FALSE )
+        {
+            if ( !in_array($data, $exclusion) )
+            {
+                $path = Adjustment::Chain_Path(array ($parent, $data));
+                
+                if ( is_dir($path) )
+                {
+                    $file_system = array_merge_recursive
+                    (
+                        $file_system,
+                        self::Map_File_System($exclusion, $path)
+                    );
+                }
+                else
+                {
+                    array_push($file_system, $path);
                 }
             }
         }
@@ -406,249 +438,366 @@ implements System_Init, System_Config, System_Debug, System_Control
         return $file_system;
     }
     
-    private function Remove_Magic_Quotes()
-    {
-        if ($magic_quotes = get_magic_quotes_gpc())
-        {
-            $_GET = Value_Control::Strip_Slashes_From_Array($_GET);
-            $_POST = Value_Control::Strip_Slashes_From_Array($_POST);
-            $_COOKIE = Value_Control::Strip_Slashes_From_Array($_COOKIE);
-        }
-        
-        return TRUE;    
-    }
-    
-    private function Unregister_Globals($key_exceptions = array
+    final public static function Search_File_System
     (
-        'GLOBALS',
-        '_SESSION',
-        '_POST',
-        '_GET',
-        '_COOKIE',
-        '_REQUEST',
-        '_SERVER',
-        '_ENV',
-        '_FILES'
-    ))
+        $pattern,
+        $exclusion = array ()
+    )
     {
-        if ($register_globals = ini_get('register_globals'))
+        $file_system = self::Map_File_System();
+        $search_result = array ();
+        
+        if
+        (
+            $match = preg_grep
+            (
+                '/' . preg_quote($pattern) . '/',
+                $file_system
+            )
+        )      
         {
-            foreach ($GLOBALS AS $key => $value)
+            foreach ( $match AS $file )
             {
-                if
-                (
-                    !in_array($key, $key_exceptions) AND
-                    isset ($GLOBALS[$key])
-                )
+                if ( !in_array($file, $exclusion) )
                 {
-                    unset ($GLOBALS[$key]);
+                    array_push($search_result, $file);    
                 }
             }
         }
-        
-        return TRUE;    
+                  
+        return $search_result;
+    }    
+}
+ 
+abstract class Adjustment
+{    
+    final public static function Chain_Filename($base, $extension)
+    {
+        $filename = $base . '.' . $extension;
+
+        return $filename;    
     }
-    
-    private function Set_Error_Reporting
+     
+    final public static function Chain_Path($args)
+    {
+        $path = NULL;
+        
+        foreach ( $args AS $data )
+        {
+            $path .= DIRECTORY_SEPARATOR . $data;
+        }
+        
+        $path = substr($path, 1);
+
+        return $path;
+    }
+     
+    final public static function Level_Out_Path($path)
+    {   
+        $mirrored_directory_separator = ( DIRECTORY_SEPARATOR != '/' )
+            ? '/'
+            : '\\';
+            
+        $path = str_replace
+        (
+            $mirrored_directory_separator,
+            DIRECTORY_SEPARATOR,
+            $path
+        );
+            
+        if ( $path[0] == DIRECTORY_SEPARATOR )
+        {
+            $path = substr($path, 1);
+        }    
+        
+        return $path;
+    }
+     
+    final public static function Strip_Slashes_From_Array
     (
-        $development_mode = FALSE,
-        $error_log_file = FALSE
+        $array = array ()
     )
     {
-        if (defined('DEVELOPMENT_MODE'))
+        foreach ( $array AS $key => $value )
         {
-            $development_mode = DEVELOPMENT_MODE;
-        }
-        
-        $error_log_file = (defined('LOG_PATH'))
-            ? LOG_PATH . DIRECTORY_SEPARATOR
-            : self::Get_System_Root() . DIRECTORY_SEPARATOR;
-        
-        $error_log_file .=
-        (
-            defined('ERROR_FILENAME') AND
-            defined('LOG_EXTENSSION')
-        )
-            ? self::Add_Extension(ERROR_FILENAME, LOG_EXTENSION)
-            : self::Add_Extension
-            (
-                self::DEFAULT_ERROR_FILENAME,
-                self::DEFAULT_LOG_EXTENSION
-            );
-        
-        error_reporting(E_ALL);
-        
-        if ($development_mode === TRUE)
-        {
-            ini_set('display_errors', 'On');
-        }
-        else
-        {
-            if (!file_exists($error_log_file))
+            if ( is_array($array[$key]) )
             {
-                $handle = fopen($error_log_file, 'w');
-                
-                fclose($handle);
+                $array[$key] = self::Strip_Slashes_From_Array
+                (
+                    $array[$key]
+                );
             }
-            
-            ini_set('display_errors', 'Off');
-            ini_set('log_errors', 'On');
-            ini_set('error_log', $error_log_file);
+            else
+            {
+                $value = stripslashes($value);
+                $array[$key] = $value;
+            }
         }
-               
-        return TRUE;    
-    }   
+        
+        return $array;    
+    } 
+}
+ 
+abstract class Message_Stock
+{
+    const E_NO_DIR = '\'%s\' is not a directory';
+    const E_NO_DEV_MODE = 'Development mode is not running';
+    const E_NO_FILE = '\'%s\' not found in file system';
+    const E_FILE_PROTECTED = 'File \'%s\' is protected from overwriting';
+    const E_FILE_EXISTS = 'File \'%s\' exists already';
+    const E_NO_CLASS = 'Class \'%s\' have not been found';
+    const E_NO_DB_COND_YES =
+        'Access denied for user \'%s\'@\'%s\' (using password: YES)';
+    const E_NO_DB_COND_NO =
+        'Access denied for user \'%s\'@\'%s\' (using password: NO)';
+    const E_NO_ARR_KEY = 'Array key \'%s\' does not exist';
+    const E_NO_SESS = 'Session does not exist';
+    const E_DB_CREATION ='Creation of database \'%s\' failed';
+    const E_DB_SELECTION = 'Could not select database \'%s\'';
+    const E_DB_SYNTAX_ERR = 'You have an error in your SQL syntax';
 }
 
-final class System
-extends System_Default
-{
+final class Project
+extends Bootstrap
+{   
     public function __construct()
     {
-        define('ROOT', self::Get_System_Root());
+        spl_autoload_register('self::__autoload');
+        define('ROOT', File_System::Get_Root());
         
-        set_exception_handler('System::Handle_Exception');
-          
-        if (!($autoload = spl_autoload_register('self::__autoload')))
-        {
-            throw new Exception
-            (
-                'Registering __autoload as autoload implementation failed.'
-            );
-        }
-        
-        $config_path =
-            ROOT . DIRECTORY_SEPARATOR .
-            self::CONFIG_DIRECTORY . DIRECTORY_SEPARATOR;
-            
-        $constants_init_file =
-            ROOT . DIRECTORY_SEPARATOR .
-            self::CONFIG_DIRECTORY . DIRECTORY_SEPARATOR .
-            self::Add_Extension
-            (
-                self::CONSTANTS_INIT_FILENAME,
-                self::INIT_EXTENSION
-            );
-        
-        $init_constants_file = self::Init_Project_File
+        $constants_ini = Adjustment::Chain_Path
         (
-            PROJECT_NAME,
-            $config_path,
-            self::INIT_EXTENSION,
-            $constants_init_file
+            array
+            (
+                ROOT,
+                self::CONFIG_DIR,
+                Adjustment::Chain_Filename
+                (
+                    self::CONSTANTS_FILE,
+                    self::INI_EXT
+                )
+            )
+        );
+        $bootstrap_ini = Adjustment::Chain_Path
+        (
+            array
+            (
+                ROOT,
+                self::CONFIG_DIR,
+                Adjustment::Chain_Filename
+                (
+                    self::BOOTSTRAP_FILE,
+                    self::INI_EXT
+                )
+            )
+        );
+        $controller_class_ini = Adjustment::Chain_Path
+        (
+            array
+            (
+                ROOT,
+                self::CONFIG_DIR,
+                Adjustment::Chain_Filename
+                (
+                    self::CONTROLLER_FILE,
+                    self::CLASS_INI_EXT
+                )
+            )
+        );
+        $model_class_ini = Adjustment::Chain_Path
+        (
+            array
+            (
+                ROOT,
+                self::CONFIG_DIR,
+                Adjustment::Chain_Filename
+                (
+                    self::MODEL_FILE,
+                    self::CLASS_INI_EXT
+                )
+            )
+        );
+        $database_class_ini = Adjustment::Chain_Path
+        (
+            array
+            (
+                ROOT,
+                self::CONFIG_DIR,
+                Adjustment::Chain_Filename
+                (
+                    self::DATABASE_FILE,
+                    self::CLASS_INI_EXT
+                )
+            )
+        );
+        $project_ini = Adjustment::Chain_Path
+        (
+            array
+            (
+                ROOT,
+                self::CONFIG_DIR,
+                Adjustment::Chain_Filename
+                (
+                    PROJECT_NAME,
+                    self::INI_EXT
+                )
+            )
         );
         
-        if (!($require_init_file = self::Require_Files
+        File_System::Copy_Files
         (
-            self::$init_file,
-            self::INIT_EXTENSION
-        )))
-        {
-            throw new Exception
+            array
             (
-                'Requiring file ' .
-                self::$init_file . '.' . self::INIT_EXTENSION .
-                ' failed.'
-            );        
-        }
-         
-        $controller_filename = (defined('CONTROLLER_POSTFIX'))
-            ? PROJECT_NAME . CONTROLLER_POSTFIX
-            : PROJECT_NAME . self::DEFAULT_CONTROLLER_POSTFIX;
-        
-        $controllers_path = (defined('CONTROLLERS_PATH'))
-            ? CONTROLLERS_PATH . DIRECTORY_SEPARATOR
-            : ROOT . DIRECTORY_SEPARATOR;
-        
-        $models_path = (defined('MODELS_PATH'))
-            ? MODELS_PATH . DIRECTORY_SEPARATOR
-            : ROOT . DIRECTORY_SEPARATOR;
-            
-        $class_extension = (defined('CLASS_EXTENSION'))
-            ? CLASS_EXTENSION
-            : self::DEFAULT_CLASS_EXTENSION;
-        
-        $controller_init_file =
-            $config_path .
-            self::Add_Extension
-            (
-                self::CONTROLLER_INIT_FILENAME,
-                self::INIT_EXTENSION
-            );
-            
-        $model_init_file =
-            $config_path .
-            self::Add_Extension
-            (
-                self::MODEL_INIT_FILENAME,
-                self::INIT_EXTENSION
-            );
-        
-        $init_controller_file = self::Init_Project_File
-        (
-            $controller_filename,
-            $controllers_path,
-            $class_extension,
-            $controller_init_file
+                array
+                (
+                    $constants_ini,
+                    $project_ini
+                ),
+                array
+                (
+                    $bootstrap_ini,
+                    Adjustment::Chain_Path
+                    (
+                        array
+                        (
+                            ROOT,
+                            self::LIBRARY_DIR,
+                            Adjustment::Chain_Filename
+                            (
+                                self::BOOTSTRAP_FILE,
+                                self::PHP_EXT
+                            )
+                        )
+                    )
+                )
+            )
         );
-        
-        $init_model_file = self::Init_Project_File
+        File_System::Append_To_Files
         (
-            PROJECT_NAME,
-            $models_path,
-            $class_extension,
-            $model_init_file
-        );
-        
-        $bootstrap_filename = (defined('BOOTSTRAP_FILENAME'))
-            ? BOOTSTRAP_FILENAME
-            : self::DEFAULT_BOOTSTRAP_FILENAME;
-            
-        $file_extension = (defined('FILE_EXTENSION'))
-            ? FILE_EXTENSION
-            : self::DEFAULT_FILE_EXTENSION;
-        
-        if (!($require_bootstrap_file = self::Require_Files
-        (
-            $bootstrap_filename,
-            $file_extension
-        )))
-        {
-            throw new Exception
+            array
             (
-                'Requiring file ' .
-                $bootstrap_filename . '.' . $file_extension .
-                ' failed.'
-            );
-        }        
-        
-        return TRUE;        
+                $project_ini =>
+                File_System::Load_Files_To_String
+                (
+                    File_System::Search_File_System
+                    (
+                        self::INI_EXT,
+                        array
+                        (
+                            $constants_ini,
+                            $bootstrap_ini,
+                            $controller_class_ini,
+                            $model_class_ini,
+                            $database_class_ini,
+                            $project_ini
+                        ) 
+                    )
+                )    
+            )
+        );
+        File_System::Require_Files
+        (
+            array
+            (
+                Adjustment::Chain_Filename(PROJECT_NAME, self::INI_EXT),
+                Adjustment::Chain_Filename
+                (
+                    self::BOOTSTRAP_FILE,
+                    self::PHP_EXT
+                )
+            )
+        );
+        File_System::Copy_Files
+        (
+            array
+            (
+                array
+                (
+                    $controller_class_ini,
+                    Adjustment::Chain_Path
+                    (
+                        array
+                        (
+                            ROOT,
+                            APPLICATION_DIR,
+                            CONTROLLERS_DIR,
+                            Adjustment::Chain_Filename
+                            (
+                                PROJECT_NAME . CONTROLLER_SUFFIX,
+                                CLASS_EXT
+                            )
+                        )
+                    )
+                ),
+                array
+                (
+                    $model_class_ini,
+                    Adjustment::Chain_Path
+                    (
+                        array
+                        (
+                            ROOT,
+                            APPLICATION_DIR,
+                            MODELS_DIR,
+                            Adjustment::Chain_Filename
+                            (
+                                PROJECT_NAME,
+                                CLASS_EXT
+                            )
+                        )
+                    )
+                ),
+                array
+                (
+                    $database_class_ini,
+                    Adjustment::Chain_Path
+                    (
+                        array
+                        (
+                            ROOT,
+                            self::LIBRARY_DIR,
+                            Adjustment::Chain_Filename
+                            (
+                                self::DATABASE_FILE,
+                                CLASS_EXT
+                            )
+                        )
+                    )
+                )
+            )
+        );
     }
-    
-    public static function __autoload($class_name)
+     
+    function __autoload($class_name)
     {
-        $class_extension = (defined('CLASS_EXTENSION'))
-            ? CLASS_EXTENSION
-            : self::DEFAULT_CLASS_EXTENSION;
-        
-        if (!($require_class_file = self::Require_Files
+        File_System::Require_Files
         (
-            strtolower($class_name),
-            $class_extension
-        )))
-        {
-            throw new Exception
+            array
             (
-                'Requiring file ' .
-                strtolower($class_name) . '.' . $class_extension .
-                ' failed'
-            );
-        }
-
-        return TRUE;    
+                Adjustment::Chain_Filename
+                (
+                    strtolower($class_name),
+                    CLASS_EXT
+                )
+            )
+        );      
     }
+     
+    public function __destruct()
+    {
+        Database::Connect_Host();
+        Database::Save_Project_Vars();
+        self::Call_Hook();
+        Database::Disconnect_Host();
+        
+        if ( DEV_MODE )
+        {
+            Debugger::Dump_Constants($this);    
+        }   
+    }      
 }
 
-define('PROJECT_NAME', System::Get_Project_Name());
+set_exception_handler('Debugger::Catch_Exception');
+define('PROJECT_NAME', File_System::Get_Project_Name());
 
-${PROJECT_NAME} = new System;
+${PROJECT_NAME} = new Project;

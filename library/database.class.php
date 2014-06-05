@@ -1,7 +1,54 @@
 <?php
-final class Database
-extends mySQL
+/**
+ * NIL /library/database.class.php
+ * 
+ * abstracts database class.
+ * 
+ * @todo long description
+ * 
+ * This program is free software: you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * @package NIL Core
+ * @author Frank Hoechel <hoechel@gmail.com>
+ * @copyright 2013 Frank Hoechel
+ * @license GPL <http://opensource.org/licenses/GPL-3.0>
+ * @version 0.3
+ */
+
+/**
+ * Database
+ * 
+ * handles database request.
+ * 
+ * @package NIL Core  
+ * @author Frank Hoechel <hoechel@gmail.com>
+ * @copyright 2013 Frank Hoechel 
+ * @version 0.3
+ * @access public
+ */
+ 
+abstract class Database
 {
+    /**
+     * Database::Connect_Host()
+     * 
+     * connects database hosts.
+     * 
+     * @param mixed $db_host
+     * @param mixed $db_user
+     * @param mixed $db_pwd
+     * @return
+     */
+     
     final public static function Connect_Host
     (
         $db_host = DATABASE_HOST,
@@ -15,7 +62,7 @@ extends mySQL
             (
                 @array_map
                 (
-                    self::DB_CONNECT,
+                    static::DB_CONNECT,
                     array ($db_host),
                     array ($db_user),
                     array ($db_pwd)
@@ -27,145 +74,25 @@ extends mySQL
                 ? Message_Stock::E_NO_DB_COND_YES
                 : Message_Stock::E_NO_DB_COND_NO;
             
-            throw new Exception
-            (
-                vsprintf($message, array ($db_user, $db_host))
-            );
+            $message = vsprintf($message, array ($db_user, $db_host));
+            
+            throw new Exception($message);
         }
        
         return TRUE;    
     }
     
-    final private static function Create_Database($db_name = DATABASE_NAME)
-    {
-        if
-        (
-            !implode
-            (
-                array_map
-                (
-                    self::DB_QUERY,
-                    array
-                    (
-                        vsprintf(self::CREATE_DB_QUERY, array ($db_name))
-                    )
-                )
-            ) 
-        )
-        {
-            $message = Message_Stock::E_DB_CREATION;
-            $exception = new Exception
-            (
-                vsprintf($message, array ($db_name))
-            );
-            
-            Debugger::Catch_Exception($exception);    
-        }
-        
-        return TRUE;        
-    }
-    
-    final private static function Use_Database($db_name = DATABASE_NAME)
-    {
-        self::Create_Database($db_name);
-        
-        if ( !implode(array_map(self::DB_SELECT, array ($db_name))) )
-        {
-            $message = Message_Stock::E_DB_SELECTION;
-            $exception = new Exception
-            (
-                vsprintf($message, array ($db_name))
-            );
-            
-            Debugger::Catch_Exception($exception);      
-        }
-        
-        return TRUE;      
-    }
-    
-    final private static function Create_Table($table, $query)
-    {
-        if
-        (   !implode
-            (
-                array_map
-                (
-                    self::DB_QUERY,
-                    array
-                    (
-                        vsprintf
-                        (
-                            self::CREATE_TABLE_QUERY,
-                            array ($table, $query)
-                        )
-                    )
-                )
-            )
-        )
-        {
-            $message = Message_Stock::E_DB_SYNTAX_ERR;
-            $exception = new Exception($message);
-            
-            Debugger::Catch_Exception($exception);    
-        }
-
-        return TRUE;    
-    }
-    
-    final private static function Select_Data_Records($query)
-    {
-        $handle = array_map(self::DB_QUERY, array ($query));
-        
-        if
-        (
-            implode($handle)
-        )
-        {
-            $results = array ();
-            $n = 0;
-           
-            while
-            (
-                $row = array_map
-                (
-                    self::DB_FETCH_ASSOC, array ($handle[0])
-                ) AND
-                $row[0]
-            )
-            {
-                $results[$n++] = $row[0];
-            }
-        }
-        else
-        {
-            $message = Message_Stock::E_DB_SYNTAX_ERR;
-            $exception = new Exception($message);
-            
-            Debugger::Catch_Exception($exception);     
-        }
-        
-        $data_records = ( $n == 1 )
-            ? $results[0]
-            : $results;
-            
-        return $data_records;
-    }
-    
-    final private static function Insert_Data_Records($query)
-    {
-       if ( !implode(array_map(self::DB_QUERY, array ($query))) )
-       {
-            $message = Message_Stock::E_DB_SYNTAX_ERR;
-            $exception = new Exception($message);
-            
-            Debugger::Catch_Exception($exception);     
-       };
-    }
-    
-    final public static function Save_Project_Vars($args = array ())
-    {
-        
-        if ( self::Look_up_Database() AND self::Use_Database() )
+    /**
+     * Database::Store_Project_Vars()
+     * 
+     * stores project vars into project's project_vars table.
+     * 
+     * @return TRUE
+     */
+     
+    final public static function Store_Project_Vars()
+    { 
+        if ( static::Look_up_Database() AND self::Select_Database() )
         {
             $create_table_sessions = vsprintf
             (
@@ -177,6 +104,7 @@ extends mySQL
                     TABLE_SESSIONS_CREATED
                 )
             );
+            
             $create_table_project = vsprintf
             (
                 TABLE_PROJECT_VARS_COLUMN_DEF,
@@ -194,26 +122,28 @@ extends mySQL
             
             $select_session = vsprintf
             (
-                self::SELECT_QUERY,
+                static::SELECT_QUERY,
                 array
                 (
-                    self::SELECT_ALL_EXPR,
+                    static::SELECT_ALL_EXPR,
                     TABLE_SESSIONS
                 )
             ) .
             vsprintf
             (
-                self::WHERE_CLAUSE,
+                static::WHERE_CLAUSE,
                 array
                 (
                     TABLE_SESSIONS_SESSION_ID,
                     Session::Get_Session_Id()
                 )
             );
+            
             $sessions_columns = self::Select_Data_Records
             (
-                vsprintf(self::SHOW_COLUMNS_QUERY, array (TABLE_SESSIONS))
+                vsprintf(static::SHOW_COLUMNS_QUERY, array (TABLE_SESSIONS))
             );
+            
             $colname_expr = NULL;
             $n = count($sessions_columns);
             
@@ -221,11 +151,11 @@ extends mySQL
             {
                 foreach ( $sessions_columns[$i] AS $key => $value )
                 { 
-                    if ( $key == self::DB_FIELD )
+                    if ( $key == static::DB_FIELD )
                     {
                         $colname_expr .= vsprintf
                         (
-                            self::INSERT_COLNAME_EXPR,
+                            static::INSERT_COLNAME_EXPR,
                             array ($value)
                         );
                     }
@@ -243,9 +173,10 @@ extends mySQL
                 0,
                 -2
             );
+            
             $insert_query = vsprintf
             (
-                self::INSERT_QUERY,
+                static::INSERT_QUERY,
                 array
                 (
                     TABLE_SESSIONS,
@@ -265,10 +196,11 @@ extends mySQL
             (
                 vsprintf
                 (
-                    self::SHOW_COLUMNS_QUERY,
+                    static::SHOW_COLUMNS_QUERY,
                     array (TABLE_PROJECT_VARS)
                 )
             );
+            
             $colname_expr = NULL;
             $n = count($project_columns);
             
@@ -277,11 +209,11 @@ extends mySQL
                 foreach ( $project_columns[$i] AS $key => $value )
                 {
                     
-                    if ( $key == self::DB_FIELD )
+                    if ( $key == static::DB_FIELD )
                     {
                         $colname_expr .= vsprintf
                         (
-                            self::INSERT_COLNAME_EXPR,
+                            static::INSERT_COLNAME_EXPR,
                             array ($value)
                         );
                     }
@@ -290,25 +222,23 @@ extends mySQL
             
             $colname_expr = substr($colname_expr, 0, -2);
             $insert_values_expr = NULL;
+            $session_vars = SESSION::Get_Session_Vars();
             
-            foreach
-            (
-                SESSION::Get_Session_Vars() AS $const_key => $const_val
-            )
+            foreach ( $session_vars AS $const_key => $const_val )
             {
                 $select_query = vsprintf
                 (
-                    self::SELECT_QUERY,
-                    array (self::SELECT_ALL_EXPR, TABLE_PROJECT_VARS)
+                    static::SELECT_QUERY,
+                    array (static::SELECT_ALL_EXPR, TABLE_PROJECT_VARS)
                 ) .
                 vsprintf
                 (
-                    self::WHERE_CLAUSE,
+                    static::WHERE_CLAUSE,
                     array (TABLE_PROJECT_VARS_SESSION_ID, $session['id'])
                 ) .
                 vsprintf
                 (
-                    self::WHERE_AND_CLAUSE,
+                    static::WHERE_AND_CLAUSE,
                     array (TABLE_PROJECT_VARS_CONST_KEY, $const_key)
                 );
                 
@@ -333,7 +263,7 @@ extends mySQL
                 
                 $insert_query = vsprintf
                 (
-                    self::INSERT_QUERY,
+                    static::INSERT_QUERY,
                     array
                     (
                         TABLE_PROJECT_VARS,
@@ -348,10 +278,194 @@ extends mySQL
         
         return TRUE;
     }
+    
+    /**
+     * Database::Select_Database()
+     * 
+     * selects databases.
+     * 
+     * @param mixed $db_name
+     * @return
+     */
+     
+    final private static function Select_Database($db_name = DATABASE_NAME)
+    {
+        self::Create_Database($db_name);
         
+        if ( !implode(array_map(static::DB_SELECT, array ($db_name))) )
+        {
+            $message = Message_Stock::E_DB_SELECTION;
+            $exception = new Exception
+            (
+                vsprintf($message, array ($db_name))
+            );
+            
+            Debugger::Catch_Exception($exception);      
+        }
+        
+        return TRUE;      
+    }
+    
+    /**
+     * Database::Create_Database()
+     * 
+     * creates databases.
+     * 
+     * @param string $db_name
+     * @return TRUE
+     */
+     
+    final private static function Create_Database($db_name = DATABASE_NAME)
+    {
+        if
+        (
+            !implode
+            (
+                array_map
+                (
+                    static::DB_QUERY,
+                    array
+                    (
+                        vsprintf(static::CREATE_DB_QUERY, array ($db_name))
+                    )
+                )
+            ) 
+        )
+        {
+            $message = vsprintf
+            (
+                Message_Stock::E_DB_CREATION,
+                array ($db_name)
+            );
+            
+            throw new Exception($message);
+             
+        }
+        
+        return TRUE;        
+    }
+    
+    /**
+     * Database::Create_Table()
+     * 
+     * creates database tables.
+     * 
+     * @param string $table
+     * @param string $query
+     * @return TRUE
+     */
+     
+    final private static function Create_Table($table, $query)
+    {
+        $create_table_query = vsprintf
+        (
+            static::CREATE_TABLE_QUERY,
+            array ($table, $query)
+        );
+        
+        if
+        (   !implode
+            (
+                array_map(static::DB_QUERY, array ($create_table_query))
+            )
+        )
+        {
+            $message = vsprintf
+            (
+                Message_Stock::E_DB_SYNTAX_ERR,
+                array ($create_table_query)
+            );
+            
+            throw new Exception($message);   
+        }
+
+        return TRUE;    
+    }
+    
+    /**
+     * Database::Select_Data_Records()
+     * 
+     * gets data records from database.
+     * 
+     * @param string $query
+     * @return string|array
+     */
+     
+    final private static function Select_Data_Records($query)
+    {
+        $handle = array_map(static::DB_QUERY, array ($query));
+        
+        if ( implode($handle) )
+        {
+            $results = array ();
+            $n = 0;
+           
+            while
+            (
+                $row = array_map
+                (
+                    static::DB_FETCH_ASSOC, array ($handle[0])
+                ) AND
+                $row[0]
+            )
+            {
+                $results[$n++] = $row[0];
+            }
+        }
+        else
+        {
+            $message = vsprintf
+            (
+                Message_Stock::E_DB_SYNTAX_ERR,
+                array ($query)
+            );
+            
+            throw new Exception($message);    
+        }
+        
+        $data_records = ( $n == 1 )
+            ? $results[0]
+            : $results;
+            
+        return $data_records;
+    }
+    
+    /**
+     * Database::Insert_Data_Records()
+     * 
+     * inserts data records into database.
+     * 
+     * @param string $query
+     * @return TRUE
+     */
+     
+    final private static function Insert_Data_Records($query)
+    {
+       if ( !implode(array_map(static::DB_QUERY, array ($query))) )
+       {
+            $message = vsprintf
+            (
+                Message_Stock::E_DB_SYNTAX_ERR,
+                array ($query)
+            );
+            
+            throw new Exception($message);     
+       };
+       
+       return TRUE;
+    }
+    
+    /**
+     * Database::Disconnect_Host()
+     * 
+     * disconnects from database hosts.
+     * 
+     * @return TRUE
+     */
+     
     final public static function Disconnect_Host()
     {
-        array_map(self::DB_DISCONNECT, array ());
+        array_map(static::DB_DISCONNECT, array ());
         
         return TRUE;
     }

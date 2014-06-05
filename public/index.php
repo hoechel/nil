@@ -11,7 +11,7 @@
  * 
  * PHP 5.4.3
  * 
- * Copyright (c) 2012/13 Frank Hoechel
+ * Copyright (c) 2012-14 Frank Hoechel
  * 
  * LICENSE: This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -29,7 +29,7 @@
  * @subpackage Core
  * @author Frank Hoechel <hoechel@gmail.com>
  * @version $Id: index.php,v 0.5 2013/06/08 12:05:27 fhoechel Exp $
- * @copyright Copyright (c) 2011-13 Frank Hoechel
+ * @copyright Copyright (c) 2011-14 Frank Hoechel
  * @since Version 0.2
  * @license http://opensource.org/licenses/GPL-3.0 GPL-3.0
  */
@@ -52,7 +52,7 @@
  * @subpackage Core 
  * @author Frank Hoechel <hoechel@gmail.com>
  * @version 0.5
- * @copyright Copyright (c) 2011-13 Frank Hoechel
+ * @copyright Copyright (c) 2011-14 Frank Hoechel
  * @since Version 0.4
  */
 
@@ -742,7 +742,7 @@ abstract class Adjustment
             {
                 $erase_comments .= PHP_EOL;    
             }
-            elseif ( !is_array($token))
+            elseif ( !is_array($token) )
             {
                 $erase_comments .= $token;      
             }
@@ -755,7 +755,6 @@ abstract class Adjustment
                 $erase_comments
             );   
         }
-        
         
         return $erase_comments;
     }
@@ -836,7 +835,7 @@ extends Bootstrap
     {
         spl_autoload_register('self::__autoload');
         define('ROOT', File_System::Get_Root());
-        
+
         $constants_ini = Adjustment::Chain_Path
         (
             array

@@ -78,7 +78,6 @@ abstract class Session
     )
     {
         $constants = Delivery_Agent::Get_Class_Constants($args);
-
         $defined_constants = get_defined_constants(TRUE);
         $constants = array_replace_recursive
         (

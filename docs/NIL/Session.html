@@ -1,21 +1,21 @@
 <html>
 <head>
-<title>Docs For Class Bootstrap</title>
+<title>Docs For Class Session</title>
 <link rel="stylesheet" type="text/css" href="../media/style.css">
 </head>
 <body>
 
 <table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
   <tr>
-    <td class="header_top">Core</td>
+    <td class="header_top">NIL</td>
   </tr>
   <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
   <tr>
     <td class="header_menu">
         
-                                                        
-                                                  		  [ <a href="../classtrees_Core.html" class="menu">class tree: Core</a> ]
-		  [ <a href="../elementindex_Core.html" class="menu">index: Core</a> ]
+                                                                            
+                              		  [ <a href="../classtrees_NIL.html" class="menu">class tree: NIL</a> ]
+		  [ <a href="../elementindex_NIL.html" class="menu">index: NIL</a> ]
 		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
     </td>
   </tr>
@@ -33,22 +33,43 @@
               <a href="../li_Core.html">Core</a><br />
               <a href="../li_NIL.html">NIL</a><br />
             <br /><br />
-                  
+                        <b>Files:</b><br />
+      	  <div class="package">
+			<a href="../NIL/_config---bootstrap.ini.php.html">		bootstrap.ini.php
+		</a><br>
+			<a href="../NIL/_config---constants.ini.php.html">		constants.ini.php
+		</a><br>
+			<a href="../NIL/_library---database.class.php.html">		database.class.php
+		</a><br>
+			<a href="../NIL/_library---delivery_agent.class.php.html">		delivery_agent.class.php
+		</a><br>
+			<a href="../NIL/_library---mysql.class.php.html">		mysql.class.php
+		</a><br>
+			<a href="../NIL/_library---session.class.php.html">		session.class.php
+		</a><br>
+	  </div><br />
+	subpackage <b>Core</b><br>  <div class="package">
+			<a href="../NIL/Core/_public---index.php.html">		index.php
+		</a><br>
+	  </div><br />
+      
       
             <b>Classes:</b><br />
         <div class="package">
-		    		<a href="../Core/Adjustment.html">Adjustment</a><br />
-	    		<a href="../Core/Bootstrap.html">Bootstrap</a><br />
-	    		<a href="../Core/Debugger.html">Debugger</a><br />
-	    		<a href="../Core/Message_Stock.html">Message_Stock</a><br />
-	    		<a href="../Core/Project.html">Project</a><br />
+		    		<a href="../NIL/Database.html">Database</a><br />
+	    		<a href="../NIL/Delivery_Agent.html">Delivery_Agent</a><br />
+	    		<a href="../NIL/mySQL.html">mySQL</a><br />
+	    		<a href="../NIL/Session.html">Session</a><br />
+	  </div>
+  <div class="package">
+	Core<br />	    &nbsp;&nbsp;		<a href="../NIL/Core/File_System.html">File_System</a><br />
 	  </div>
                 </td>
     <td>
       <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
 
-<h1>Class: Bootstrap</h1>
-Source Location: /public/index.php<br /><br />
+<h1>Class: Session</h1>
+Source Location: /library/session.class.php<br /><br />
 
 
 <table width="100%" border="0">
@@ -56,7 +77,7 @@ Source Location: /public/index.php<br /><br />
 
 <h3><a href="#class_details">Class Overview</a></h3>
 <pre></pre><br />
-<div class="description"></div><br /><br />
+<div class="description">Session</div><br /><br />
 <h4>Author(s):</h4>
 <ul>
           <li>Frank Hoechel &lt;<a href="mailto:hoechel@gmail.com">hoechel@gmail.com</a>&gt;</li>
@@ -81,23 +102,15 @@ Source Location: /public/index.php<br /><br />
 </td>
 
 
-<td valign="top">
-<h3><a href="#class_consts">Constants</a></h3>
-<ul>
-    <li><a href="../Core/Bootstrap.html#constBOOTSTRAP_FILE">BOOTSTRAP_FILE</a></li>
-    <li><a href="../Core/Bootstrap.html#constCONFIG_DIR">CONFIG_DIR</a></li>
-    <li><a href="../Core/Bootstrap.html#constCONSTANTS_FILE">CONSTANTS_FILE</a></li>
-    <li><a href="../Core/Bootstrap.html#constINI_EXT">INI_EXT</a></li>
-  </ul>
-</td>
 
 <td valign="top">
 <h3><a href="#class_methods">Methods</a></h3>
 <ul>
-    <li><a href="../Core/Bootstrap.html#methodCall_Hook">Call_Hook</a></li>
-    <li><a href="../Core/Bootstrap.html#methodRemove_Magic_Quotes">Remove_Magic_Quotes</a></li>
-    <li><a href="../Core/Bootstrap.html#methodSet_Error_Reporting">Set_Error_Reporting</a></li>
-    <li><a href="../Core/Bootstrap.html#methodUnregister_Globals">Unregister_Globals</a></li>
+    <li><a href="../NIL/Session.html#methodGet_Session_Id">Get_Session_Id</a></li>
+    <li><a href="../NIL/Session.html#methodGet_Session_Vars">Get_Session_Vars</a></li>
+    <li><a href="../NIL/Session.html#methodLook_Up_Session">Look_Up_Session</a></li>
+    <li><a href="../NIL/Session.html#methodStart_Session">Start_Session</a></li>
+    <li><a href="../NIL/Session.html#methodStore_Project_Constants">Store_Project_Constants</a></li>
   </ul>
 </td>
 
@@ -107,15 +120,6 @@ Source Location: /public/index.php<br /><br />
 <table width="100%" border="0"><tr>
 
 
-<td valign="top">
-<h3>Child classes:</h3>
-<div class="tags">
-<dl>
-<dt><a href="../Core/Project.html">Project</a></dt>
-	<dd></dd>
-</dl>
-</div>
-</td>
 
 
 
@@ -126,8 +130,8 @@ Source Location: /public/index.php<br /><br />
 <a name="class_details"></a>
 <h3>Class Details</h3>
 <div class="tags">
-[line 1015]<br />
-<br /><br />
+[line 39]<br />
+Session<br /><br /><p>handles session requests.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -157,17 +161,17 @@ Source Location: /public/index.php<br /><br />
 <h3>Class Methods</h3>
 <div class="tags">
   <hr />
-	<a name="methodCall_Hook"></a>
-	<h3>static method Call_Hook <span class="smalllinenumber">[line 1157]</span></h3>
+	<a name="methodGet_Session_Id"></a>
+	<h3>static method Get_Session_Id <span class="smalllinenumber">[line 130]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>static TRUE Call_Hook(
+		<code>static string Get_Session_Id(
 )</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Bootstrap::Call_Hook()<br /><br /><p>calls the hook of the project.</p><br /><br /><br />
+		Session::Get_Session_Id()<br /><br /><p>returns session id.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -182,106 +186,18 @@ Source Location: /public/index.php<br /><br />
         <div class="top">[ <a href="#top">Top</a> ]</div>
   </div>
   <hr />
-	<a name="methodRemove_Magic_Quotes"></a>
-	<h3>static method Remove_Magic_Quotes <span class="smalllinenumber">[line 1085]</span></h3>
+	<a name="methodGet_Session_Vars"></a>
+	<h3>static method Get_Session_Vars <span class="smalllinenumber">[line 155]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>static TRUE Remove_Magic_Quotes(
-[mixed
-$args = array('_COOKIE', '_GET', '_POST')])</code>
+		<code>static array Get_Session_Vars(
+[
+$keys = NULL])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Bootstrap::Remove_Magic_Quotes()<br /><br /><p>removes magic quotes.</p><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">mixed&nbsp;&nbsp;</td>
-        <td><b>$args</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodSet_Error_Reporting"></a>
-	<h3>static method Set_Error_Reporting <span class="smalllinenumber">[line 1032]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>static TRUE Set_Error_Reporting(
-[string
-$errors_file = NULL], [bool
-$dev_mode = DEV_MODE])</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Bootstrap::Set_Error_Reporting()<br /><br /><p>sets the error reporting level.</p><br /><br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-<br /><br />
-
-	
-        <h4>Parameters:</h4>
-    <div class="tags">
-    <table border="0" cellspacing="0" cellpadding="0">
-          <tr>
-        <td class="type">string&nbsp;&nbsp;</td>
-        <td><b>$errors_file</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-          <tr>
-        <td class="type">bool&nbsp;&nbsp;</td>
-        <td><b>$dev_mode</b>&nbsp;&nbsp;</td>
-        <td></td>
-      </tr>
-        </table>
-    </div><br />
-        <div class="top">[ <a href="#top">Top</a> ]</div>
-  </div>
-  <hr />
-	<a name="methodUnregister_Globals"></a>
-	<h3>static method Unregister_Globals <span class="smalllinenumber">[line 1116]</span></h3>
-	<div class="function">
-    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
-    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>static TRUE Unregister_Globals(
-[array
-$exceptions = array
-        (
-            'GLOBALS',
-            '_COOKIE',
-            '_ENV',
-            '_FILES',
-            '_GET',
-            '_POST',
-            '_REQUEST',
-            '_SERVER',
-            '_SESSION')])</code>
-    </td></tr></table>
-    </td></tr></table><br />
-	
-		Bootstrap::Unregister_Globals()<br /><br /><p>unsets globals for security reasons.</p><br /><br /><br />
+		Session::Get_Session_Vars()<br /><br /><p>gets session vars on given keys.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -298,7 +214,104 @@ $exceptions = array
     <table border="0" cellspacing="0" cellpadding="0">
           <tr>
         <td class="type">array&nbsp;&nbsp;</td>
-        <td><b>$exceptions</b>&nbsp;&nbsp;</td>
+        <td><b>$keys</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodLook_Up_Session"></a>
+	<h3>static method Look_Up_Session <span class="smalllinenumber">[line 113]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>static string Look_Up_Session(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Session::Look_Up_Session()<br /><br /><p>tests if session id exists.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodStart_Session"></a>
+	<h3>static method Start_Session <span class="smalllinenumber">[line 49]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>static TRUE Start_Session(
+[
+$session_name = NULL])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Session::Start_Session()<br /><br /><p>starts sessions.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">&nbsp;&nbsp;</td>
+        <td><b>$session_name</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+        </table>
+    </div><br />
+        <div class="top">[ <a href="#top">Top</a> ]</div>
+  </div>
+  <hr />
+	<a name="methodStore_Project_Constants"></a>
+	<h3>static method Store_Project_Constants <span class="smalllinenumber">[line 75]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>static TRUE Store_Project_Constants(
+[array
+$args = array ('Project', 'Message_Stock')])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+	
+		Session::Store_Project_Constants()<br /><br /><p>gets all project's constants and stores them into session.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+
+	
+        <h4>Parameters:</h4>
+    <div class="tags">
+    <table border="0" cellspacing="0" cellpadding="0">
+          <tr>
+        <td class="type">array&nbsp;&nbsp;</td>
+        <td><b>$args</b>&nbsp;&nbsp;</td>
         <td></td>
       </tr>
         </table>
@@ -308,79 +321,10 @@ $exceptions = array
 
 </div><br />
 
-<hr />
-<a name="class_constss"></a>
-<h3>Class Constants</h3>
-<div class="tags">
-	<a name="constBOOTSTRAP_FILE"></a>
-	<p></p>
-	<h4>BOOTSTRAP_FILE = <span class="value">&nbsp;'bootstrap'</span></h4>
-	<p>[line 1020]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCONFIG_DIR"></a>
-	<p></p>
-	<h4>CONFIG_DIR = <span class="value">&nbsp;'config'</span></h4>
-	<p>[line 1017]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constCONSTANTS_FILE"></a>
-	<p></p>
-	<h4>CONSTANTS_FILE = <span class="value">&nbsp;'constants'</span></h4>
-	<p>[line 1018]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-	<a name="constINI_EXT"></a>
-	<p></p>
-	<h4>INI_EXT = <span class="value">&nbsp;'ini.php'</span></h4>
-	<p>[line 1019]</p>
-  <br /><br />
-<h4>Tags:</h4>
-<div class="tags">
-<table border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
-  </tr>
-</table>
-</div>
-
-  <br />
-	<div class="top">[ <a href="#top">Top</a> ]</div><br />
-</div><br />
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Fri, 06 Jun 2014 10:48:23 +0000 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
+		    Documentation generated on Fri, 06 Jun 2014 10:48:24 +0000 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
 	      </div>
       </td></tr></table>
     </td>

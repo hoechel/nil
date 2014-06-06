@@ -28,7 +28,7 @@
  * @package NIL
  * @subpackage Core
  * @author Frank Hoechel <hoechel@gmail.com>
- * @version $Id: index.php,v 0.5 2013/06/08 12:05:27 fhoechel Exp $
+ * @version $Id: index.php,v 0.5 2014/06/06 12:46:25 fhoechel Exp $
  * @copyright Copyright (c) 2011-14 Frank Hoechel
  * @since Version 0.2
  * @license http://opensource.org/licenses/GPL-3.0 GPL-3.0

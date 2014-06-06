@@ -13,7 +13,7 @@
   <tr>
     <td class="header_menu">
         
-                                                        
+                                                                            
                               		  [ <a href="../../classtrees_NIL.html" class="menu">class tree: NIL</a> ]
 		  [ <a href="../../elementindex_NIL.html" class="menu">index: NIL</a> ]
 		  	    [ <a href="../../elementindex.html" class="menu">all elements</a> ]
@@ -25,19 +25,43 @@
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr valign="top">
     <td width="200" class="menu">
+	<div id="todolist">
+			<p><a href="../../todolist.html">Todo List</a></p>
+	</div>
       <b>Packages:</b><br />
+              <a href="../../li_default.html">default</a><br />
               <a href="../../li_Core.html">Core</a><br />
               <a href="../../li_NIL.html">NIL</a><br />
             <br /><br />
                         <b>Files:</b><br />
-      	subpackage <b>Core</b><br>  <div class="package">
-			<a href="../../NIL/Core/_index.php.html">		index.php
+      	  <div class="package">
+			<a href="../../NIL/_config---bootstrap.ini.php.html">		bootstrap.ini.php
+		</a><br>
+			<a href="../../NIL/_config---constants.ini.php.html">		constants.ini.php
+		</a><br>
+			<a href="../../NIL/_library---database.class.php.html">		database.class.php
+		</a><br>
+			<a href="../../NIL/_library---delivery_agent.class.php.html">		delivery_agent.class.php
+		</a><br>
+			<a href="../../NIL/_library---mysql.class.php.html">		mysql.class.php
+		</a><br>
+			<a href="../../NIL/_library---session.class.php.html">		session.class.php
+		</a><br>
+	  </div><br />
+	subpackage <b>Core</b><br>  <div class="package">
+			<a href="../../NIL/Core/_public---index.php.html">		index.php
 		</a><br>
 	  </div><br />
       
       
             <b>Classes:</b><br />
         <div class="package">
+		    		<a href="../../NIL/Database.html">Database</a><br />
+	    		<a href="../../NIL/Delivery_Agent.html">Delivery_Agent</a><br />
+	    		<a href="../../NIL/mySQL.html">mySQL</a><br />
+	    		<a href="../../NIL/Session.html">Session</a><br />
+	  </div>
+  <div class="package">
 	Core<br />	    &nbsp;&nbsp;		<a href="../../NIL/Core/File_System.html">File_System</a><br />
 	  </div>
                 </td>
@@ -45,7 +69,7 @@
       <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
 
 <h1>Class: File_System</h1>
-Source Location: /index.php<br /><br />
+Source Location: /public/index.php<br /><br />
 
 
 <table width="100%" border="0">
@@ -72,7 +96,7 @@ Source Location: /index.php<br /><br />
 
 <h4>Copyright:</h4>
 <ul>
-  <li>Copyright (c) 2011-13 Frank Hoechel</li>
+  <li>Copyright (c) 2011-14 Frank Hoechel</li>
 </ul>
         
 </td>
@@ -121,7 +145,7 @@ Abtsraction of the file system of the program location<br /><br /><p>Declaration
     <td><b>version:</b>&nbsp;&nbsp;</td><td>0.5</td>
   </tr>
   <tr>
-    <td><b>copyright:</b>&nbsp;&nbsp;</td><td>Copyright (c) 2011-13 Frank Hoechel</td>
+    <td><b>copyright:</b>&nbsp;&nbsp;</td><td>Copyright (c) 2011-14 Frank Hoechel</td>
   </tr>
   <tr>
     <td><b>abstract:</b>&nbsp;&nbsp;</td><td></td>
@@ -195,7 +219,7 @@ $erase_comments = FALSE])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		Overwrites target file content with source file content<br /><br /><p>By validating the passed pairs of source and target filenames,  by checking the existance of source files, and by checking the  existance of target files AND the setting of passed file protection  flag, this method will ensure the successful completion of the  copy process and will not overwrite the target file content, if it  is protected. Otherwise the runtime will be stopped by throwing an  exception. It will also erase comments of the source file content  before the overwriting process starts, if the erase comments flag  demands it.</p><br /><br /><br />
+		Overwrites target file contents with source file contents<br /><br /><p>By validating the passed pairs of source and target filenames,  by checking the existance of source files, and by checking the  existance of target files AND the setting of file protection flag,  this method will ensure the successful completion of the copy  process and will not overwrite the target file content, if it is  protected. Otherwise the runtime will be stopped by throwing an  exception. It will also erase comments of the source file content  before the overwriting process starts, if the erase comments flag  demands it.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -225,7 +249,7 @@ $erase_comments = FALSE])</code>
           <tr>
         <td class="type">array&nbsp;&nbsp;</td>
         <td><b>$args</b>&nbsp;&nbsp;</td>
-        <td>type hinting; it should contain arrays of  source filenames as keys and attached target filenames as values</td>
+        <td>type hinting; it should contain arrays of a  pair of source and target filename as values</td>
       </tr>
           <tr>
         <td class="type">bool&nbsp;&nbsp;</td>
@@ -243,18 +267,18 @@ $erase_comments = FALSE])</code>
   </div>
   <hr />
 	<a name="methodCreate_Files"></a>
-	<h3>static method Create_Files <span class="smalllinenumber">[line 202]</span></h3>
+	<h3>static method Create_Files <span class="smalllinenumber">[line 207]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
-		<code>static bool Create_Files(
+		<code>static void Create_Files(
 
 $args, [bool
 $file_protection = TRUE])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		File_System::Create_Files()<br /><br /><p>creates empty files.</p><br /><br /><br />
+		Creates empty files<br /><br /><p>By checking the existance of the passed filenames AND the setting  of passed file protection flag, this method will ensure the  creation of empty files and will not erase the files content, if  they already exist and are protected.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -272,12 +296,12 @@ $file_protection = TRUE])</code>
           <tr>
         <td class="type">array&nbsp;&nbsp;</td>
         <td><b>$args</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>type hinting; it should contain the filenames  as values</td>
       </tr>
           <tr>
         <td class="type">bool&nbsp;&nbsp;</td>
         <td><b>$file_protection</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>default TRUE; it protects the already  existing files from erasing their content</td>
       </tr>
         </table>
     </div><br />
@@ -285,7 +309,7 @@ $file_protection = TRUE])</code>
   </div>
   <hr />
 	<a name="methodGet_Project_Name"></a>
-	<h3>static method Get_Project_Name <span class="smalllinenumber">[line 239]</span></h3>
+	<h3>static method Get_Project_Name <span class="smalllinenumber">[line 248]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -295,7 +319,7 @@ $root = NULL])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		File_System::Get_Project_Name()<br /><br /><p>sets folder name of root path as project's name.</p><br /><br /><br />
+		Sets name of root folder as project's name<br /><br /><p>By checking possible storages of the root's folder name, this  method either sets the project's name to one of the values of the  storages or calls <a href="../../NIL/Core/File_System.html#methodGet_Root">Get_Root</a>. By validating that the root is  a folder it returns the project's name or otherwise exits runtime  by throwing an exception.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
@@ -303,7 +327,13 @@ $root = NULL])</code>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
   </tr>
   <tr>
-    <td><b>usedby:</b>&nbsp;&nbsp;</td><td><a href="../../NIL/Core/_index.php.html#definePROJECT_NAME">PROJECT_NAME</a></td>
+    <td><b>usedby:</b>&nbsp;&nbsp;</td><td><a href="../../NIL/Core/_public---index.php.html#definePROJECT_NAME">PROJECT_NAME</a></td>
+  </tr>
+  <tr>
+    <td><b>uses:</b>&nbsp;&nbsp;</td><td><a href="../../Core/Message_Stock.html#constE_NO_DIR">Message_Stock::E_NO_DIR</a></td>
+  </tr>
+  <tr>
+    <td><b>uses:</b>&nbsp;&nbsp;</td><td><a href="../../NIL/Core/File_System.html#methodGet_Root">File_System::Get_Root()</a></td>
   </tr>
 </table>
 </div>
@@ -316,7 +346,7 @@ $root = NULL])</code>
           <tr>
         <td class="type">string&nbsp;&nbsp;</td>
         <td><b>$root</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>default NULL; it should contain the root's  folder name</td>
       </tr>
         </table>
     </div><br />
@@ -324,7 +354,7 @@ $root = NULL])</code>
   </div>
   <hr />
 	<a name="methodGet_Root"></a>
-	<h3>static method Get_Root <span class="smalllinenumber">[line 271]</span></h3>
+	<h3>static method Get_Root <span class="smalllinenumber">[line 284]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -334,12 +364,18 @@ $parent = __FILE__])</code>
     </td></tr></table>
     </td></tr></table><br />
 	
-		File_System::Get_Root()<br /><br /><p>returns root path of path names</p><br /><br /><br />
+		Returns folder name of root path<br /><br /><p>By comparison of the passed parent path and the document's root  path and leveling up until the root folder, this method gets and  returns the name of the root folder.</p><br /><br /><br />
 <h4>Tags:</h4>
 <div class="tags">
 <table border="0" cellspacing="0" cellpadding="0">
   <tr>
     <td><b>access:</b>&nbsp;&nbsp;</td><td>public</td>
+  </tr>
+  <tr>
+    <td><b>usedby:</b>&nbsp;&nbsp;</td><td><a href="../../NIL/Core/File_System.html#methodGet_Project_Name">File_System::Get_Project_Name()</a></td>
+  </tr>
+  <tr>
+    <td><b>uses:</b>&nbsp;&nbsp;</td><td><a href="../../Core/Adjustment.html#methodLevel_Out_Path">Adjustment::Level_Out_Path()</a></td>
   </tr>
 </table>
 </div>
@@ -352,7 +388,7 @@ $parent = __FILE__])</code>
           <tr>
         <td class="type">string&nbsp;&nbsp;</td>
         <td><b>$parent</b>&nbsp;&nbsp;</td>
-        <td></td>
+        <td>default ___FILE__; it should contain the  full path of this entry point file</td>
       </tr>
         </table>
     </div><br />
@@ -360,7 +396,7 @@ $parent = __FILE__])</code>
   </div>
   <hr />
 	<a name="methodLoad_Files_To_String"></a>
-	<h3>static method Load_Files_To_String <span class="smalllinenumber">[line 299]</span></h3>
+	<h3>static method Load_Files_To_String <span class="smalllinenumber">[line 312]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -396,7 +432,7 @@ $files)</code>
   </div>
   <hr />
 	<a name="methodRequire_Files"></a>
-	<h3>static method Require_Files <span class="smalllinenumber">[line 377]</span></h3>
+	<h3>static method Require_Files <span class="smalllinenumber">[line 390]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -432,7 +468,7 @@ $files)</code>
   </div>
   <hr />
 	<a name="methodScan_File_System"></a>
-	<h3>static method Scan_File_System <span class="smalllinenumber">[line 433]</span></h3>
+	<h3>static method Scan_File_System <span class="smalllinenumber">[line 446]</span></h3>
 	<div class="function">
     <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
     <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
@@ -478,7 +514,7 @@ $exclusions)</code>
 
         <div class="credit">
 		    <hr />
-		    Documentation generated on Wed, 12 Jun 2013 13:20:31 +0000 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
+		    Documentation generated on Fri, 06 Jun 2014 10:48:23 +0000 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
 	      </div>
       </td></tr></table>
     </td>

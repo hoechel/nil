@@ -1,0 +1,270 @@
+<html>
+<head>
+<title>Docs for page database.class.php</title>
+<link rel="stylesheet" type="text/css" href="../media/style.css">
+</head>
+<body>
+
+<table border="0" cellspacing="0" cellpadding="0" height="48" width="100%">
+  <tr>
+    <td class="header_top">NIL</td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+  <tr>
+    <td class="header_menu">
+        
+                                                                            
+                              		  [ <a href="../classtrees_NIL.html" class="menu">class tree: NIL</a> ]
+		  [ <a href="../elementindex_NIL.html" class="menu">index: NIL</a> ]
+		  	    [ <a href="../elementindex.html" class="menu">all elements</a> ]
+    </td>
+  </tr>
+  <tr><td class="header_line"><img src="../media/empty.png" width="1" height="1" border="0" alt=""  /></td></tr>
+</table>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="200" class="menu">
+	<div id="todolist">
+			<p><a href="../todolist.html">Todo List</a></p>
+	</div>
+      <b>Packages:</b><br />
+              <a href="../li_default.html">default</a><br />
+              <a href="../li_Core.html">Core</a><br />
+              <a href="../li_NIL.html">NIL</a><br />
+            <br /><br />
+                        <b>Files:</b><br />
+      	  <div class="package">
+			<a href="../NIL/_config---bootstrap.ini.php.html">		bootstrap.ini.php
+		</a><br>
+			<a href="../NIL/_config---constants.ini.php.html">		constants.ini.php
+		</a><br>
+			<a href="../NIL/_library---database.class.php.html">		database.class.php
+		</a><br>
+			<a href="../NIL/_library---delivery_agent.class.php.html">		delivery_agent.class.php
+		</a><br>
+			<a href="../NIL/_library---mysql.class.php.html">		mysql.class.php
+		</a><br>
+			<a href="../NIL/_library---session.class.php.html">		session.class.php
+		</a><br>
+	  </div><br />
+	subpackage <b>Core</b><br>  <div class="package">
+			<a href="../NIL/Core/_public---index.php.html">		index.php
+		</a><br>
+	  </div><br />
+      
+      
+            <b>Classes:</b><br />
+        <div class="package">
+		    		<a href="../NIL/Database.html">Database</a><br />
+	    		<a href="../NIL/Delivery_Agent.html">Delivery_Agent</a><br />
+	    		<a href="../NIL/mySQL.html">mySQL</a><br />
+	    		<a href="../NIL/Session.html">Session</a><br />
+	  </div>
+  <div class="package">
+	Core<br />	    &nbsp;&nbsp;		<a href="../NIL/Core/File_System.html">File_System</a><br />
+	  </div>
+                </td>
+    <td>
+      <table cellpadding="10" cellspacing="0" width="100%" border="0"><tr><td valign="top">
+
+<h1>Procedural File: database.class.php</h1>
+Source Location: /library/database.class.php<br /><br />
+
+<br>
+<br>
+
+<div class="contents">
+<h2>Classes:</h2>
+<dt><a href="../NIL/Database.html">Database</a></dt>
+	<dd>Database</dd>
+</div><br /><br />
+
+<h2>Page Details:</h2>
+NIL /library/database.class.php<br /><br /><p>abstracts database class.</p><br /><br /><br />
+<h4>Tags:</h4>
+<div class="tags">
+<table border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td><b>author:</b>&nbsp;&nbsp;</td><td>Frank Hoechel &lt;<a href="mailto:hoechel@gmail.com">hoechel@gmail.com</a>&gt;</td>
+  </tr>
+  <tr>
+    <td><b>version:</b>&nbsp;&nbsp;</td><td>0.3</td>
+  </tr>
+  <tr>
+    <td><b>copyright:</b>&nbsp;&nbsp;</td><td>2013 Frank Hoechel</td>
+  </tr>
+  <tr>
+    <td><b>todo:</b>&nbsp;&nbsp;</td><td><p>long description</p><p>This program is free software: you can redistribute it and/or  modify it under the terms of the GNU General Public License as  published by the Free Software Foundation, either version 3 of the  License, or (at your option) any later version.  This program is distributed in the hope that it will be useful,  but WITHOUT ANY WARRANTY; without even the implied warranty of  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the  GNU General Public License for more details.  You should have received a copy of the GNU General Public License  along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</p></td>
+  </tr>
+  <tr>
+    <td><b>license:</b>&nbsp;&nbsp;</td><td>GPL</td>
+  </tr>
+</table>
+</div>
+<br /><br />
+<br /><br />
+<br /><br />
+<br />
+  <hr />
+	<a name="functionCreate_Database"></a>
+	<h3>Create_Database <span class="smalllinenumber">[line 318]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>TRUE Create_Database(
+[string $db_name = DATABASE_NAME])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Database::Create_Database()<br /><br /><p>creates databases.</p><br />    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$db_name</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionCreate_Table"></a>
+	<h3>Create_Table <span class="smalllinenumber">[line 358]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>TRUE Create_Table(
+string $table, string $query)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Database::Create_Table()<br /><br /><p>creates database tables.</p><br />    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$table</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$query</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionDisconnect_Host"></a>
+	<h3>Disconnect_Host <span class="smalllinenumber">[line 466]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>TRUE Disconnect_Host(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Database::Disconnect_Host()<br /><br /><p>disconnects from database hosts.</p><br />    <br /><br />
+	
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionInsert_Data_Records"></a>
+	<h3>Insert_Data_Records <span class="smalllinenumber">[line 442]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>TRUE Insert_Data_Records(
+string $query)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Database::Insert_Data_Records()<br /><br /><p>inserts data records into database.</p><br />    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$query</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionSelect_Database"></a>
+	<h3>Select_Database <span class="smalllinenumber">[line 291]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>void Select_Database(
+[mixed $db_name = DATABASE_NAME])</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Database::Select_Database()<br /><br /><p>selects databases.</p><br />    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">mixed&nbsp;&nbsp;</td>
+        <td><b>$db_name</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionSelect_Data_Records"></a>
+	<h3>Select_Data_Records <span class="smalllinenumber">[line 394]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>string|array Select_Data_Records(
+string $query)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Database::Select_Data_Records()<br /><br /><p>gets data records from database.</p><br />    <br /><br />
+	
+    		<h4>Parameters</h4>
+    <table border="0" cellspacing="0" cellpadding="0">
+		      <tr>
+        <td class="type">string&nbsp;&nbsp;</td>
+        <td><b>$query</b>&nbsp;&nbsp;</td>
+        <td></td>
+      </tr>
+				</table>
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+  <hr />
+	<a name="functionStore_Project_Vars"></a>
+	<h3>Store_Project_Vars <span class="smalllinenumber">[line 93]</span></h3>
+	<div class="function">
+    <table width="90%" border="0" cellspacing="0" cellpadding="1"><tr><td class="code_border">
+    <table width="100%" border="0" cellspacing="0" cellpadding="2"><tr><td class="code">
+		<code>TRUE Store_Project_Vars(
+)</code>
+    </td></tr></table>
+    </td></tr></table><br />
+
+		Database::Store_Project_Vars()<br /><br /><p>stores project vars into project's project_vars table.</p><br />    <br /><br />
+	
+    	<div class="top">[ <a href="#top">Top</a> ]</div><br /><br />
+	</div>
+
+        <div class="credit">
+		    <hr />
+		    Documentation generated on Fri, 06 Jun 2014 10:48:23 +0000 by <a href="http://www.phpdoc.org">phpDocumentor 1.4.1</a>
+	      </div>
+      </td></tr></table>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

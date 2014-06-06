@@ -131,8 +131,9 @@ abstract class File_System
         foreach ( $args AS $files )
         {
             $n = count($files);
-
-            if ( $n == 2 )
+            $pair = 2;
+            
+            if ( $n == $pair )
             {
                 $source = $files[0];
                 $target = $files[1];
@@ -229,12 +230,19 @@ abstract class File_System
     }
     
     /**
-     * File_System::Get_Project_Name()
+     * Sets name of root folder as project's name
      * 
-     * sets folder name of root path as project's name.
+     * By checking possible storages of the root's folder name, this
+     * method either sets the project's name to one of the values of the
+     * storages or calls {@link Get_Root}. By validating that the root is
+     * a folder it returns the project's name or otherwise exits runtime
+     * by throwing an exception.
      * 
-     * @param string $root
+     * @param string $root default NULL; it should contain the root's
+     * folder name
      * @return string
+     * @uses File_System::Get_Root()
+     * @uses Message_Stock::E_NO_DIR
      */
      
     final public static function Get_Project_Name($root = NULL)
@@ -261,12 +269,16 @@ abstract class File_System
     }
     
     /**
-     * File_System::Get_Root()
+     * Returns folder name of root path
      * 
-     * returns root path of path names
+     * By comparison of the passed parent path and the document's root
+     * path and leveling up until the root folder, this method gets and
+     * returns the name of the root folder.
      * 
-     * @param string $parent
+     * @param string $parent default ___FILE__; it should contain the
+     * full path of this entry point file
      * @return string
+     * @uses Adjustment::Level_Out_Path()
      */
      
     final public static function Get_Root($parent = __FILE__)

@@ -406,10 +406,8 @@ abstract class File_System
      
     final public static function Require_Files(array $files)
     {
-        var_dump($files);
         $files = self::Scan_File_System($files);
         
-        var_dump($files);
         foreach ( $files AS $filename )
         {
             if ( file_exists($filename) )

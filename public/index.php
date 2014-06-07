@@ -395,8 +395,7 @@ abstract class File_System
      * By checking if passed files exists within mapped and actual
      * file system, this method will ensure that only assigned and 
      * existing project's files were included. Otherwise runtime
-     * exists by throwing an exception or just does not require
-     * the files.
+     * exists by throwing an exception.
      * 
      * @param array $files it should contain needed file names
      * @return void

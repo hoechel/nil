@@ -269,7 +269,7 @@ abstract class File_System
     }
     
     /**
-     * Returns folder name of root path
+     * Returns name of root folder
      * 
      * By comparison of the passed parent path and the document's root
      * path and leveling up until the root folder, this method gets and
@@ -301,12 +301,16 @@ abstract class File_System
     }
     
     /**
-     * File_System::Load_Files_To_String()
+     * Collects data of files and assembles them to a string
      * 
-     * gets data of files and assembles them to a string.
+     * By checking the existance of passes files, this method
+     * implodes the file lines into a string and concatenates all
+     * passed files. Exception is thrown and exits runtime if
+     * file does not exist.
      * 
-     * @param array $files
+     * @param array $files it should contain needed path of files
      * @return string
+     * @uses Message_Stock::E_NO_FILE
      */
      
     final public static function Load_Files_To_String(array $files)
@@ -336,18 +340,25 @@ abstract class File_System
     }
     
     /**
-     * File_System::Map_File_System()
+     * Scans project's folders and maps them into an array
      * 
-     * scans project's folders and maps them into an array.
+     * By scanning the passed parent folder path, this method maps
+     * its file and directory structure into an array if handled data
+     * is not part of the exclusions array. Recursion is started if
+     * handled data is a directory.
      * 
-     * @param array $exclusions
-     * @param string $parent
+     * @param array $exclusions type hinting default ('.', '..'); it
+     * should contain all folder and file names which shall not be scanned
+     * @param string $parent default ROOT; it should contain the
+     * project's root path
      * @return array
+     * @uses Adjustment::Chain_Path()
+     * @uses File_System::Map_File_System()
      */
      
     final private static function Map_File_System
     (
-        $exclusions = array ('.', '..'),
+        array $exclusions = array ('.', '..'),
         $parent = ROOT
     )
     {
@@ -379,56 +390,41 @@ abstract class File_System
     } 
     
     /**
-     * File_System::Require_Files()
+     * Requiring files from file system 
      * 
-     * includes files from file system if found and exists.
+     * By checking if passed files exists within mapped and actual
+     * file system, this method will ensure that only assigned and 
+     * existing project's files were included. Otherwise runtime
+     * exists by throwing an exception or just does not require
+     * the files.
      * 
-     * @param array $files
+     * @param array $files it should contain needed file names
      * @return void
+     * @uses File_System::Map_File_System()
+     * @uses Message_Stock::E_NO_FILE
      */
      
     final public static function Require_Files(array $files)
     {
-        $file_system = self::Map_File_System();
+        var_dump($files);
+        $files = self::Scan_File_System($files);
         
-        foreach ( $files AS $data )
+        var_dump($files);
+        foreach ( $files AS $filename )
         {
-            $needle = array_map('preg_quote', array ($data));
-
-            foreach ( $needle AS $pattern )
+            if ( file_exists($filename) )
             {
-                $match = preg_grep('/' . $pattern . '/', $file_system);
+                require_once($filename);
+            }
+            else
+            {
+                $message = vsprintf
+                (
+                    Message_Stock::E_NO_FILE,
+                    array ($filename)
+                );
                 
-                if ( $match)
-                {
-                    foreach ( $match AS $filename )
-                    {
-                        if ( file_exists($filename) )
-                        {
-                            require_once($filename);
-                        }
-                        else
-                        {
-                            $message = vsprintf
-                            (
-                                Message_Stock::E_NO_FILE,
-                                array ($data)
-                            );
-                            
-                            throw new Exception($message);
-                        }
-                    }    
-                }
-                else
-                {
-                    $message = vsprintf
-                    (
-                        Message_Stock::E_NO_FILE,
-                        array ($data)
-                    );
-                    
-                    throw new Exception($message);
-                }    
+                throw new Exception($message);
             }
         }
     }
@@ -438,15 +434,15 @@ abstract class File_System
      * 
      * looks for pattern matches within file system.
      * 
-     * @param array $args
-     * @param array $exclusions
+     * @param array $args type hinting;
+     * @param array $exclusions type hinting;
      * @return array
      */
      
     final public static function Scan_File_System
     (
         array $args,
-        array $exclusions
+        array $exclusions = NULL
     )
     {
         $file_system = self::Map_File_System();
@@ -458,13 +454,13 @@ abstract class File_System
 
             foreach ( $needle AS $pattern )
             {
-                $match = preg_grep('/' . $pattern . '/', $file_system);
+                $match = preg_grep('/' . $pattern . '$/', $file_system);
                 
                 foreach ( $match AS $filename )
                 {
-                    if ( !in_array($filename, $exclusions) )
+                    if ( !is_array($exclusions) OR !in_array($filename, $exclusions) )
                     {
-                        array_push($search_result, $filename);
+                        array_push($search_result, $filename); 
                     }
                 }
             }  
@@ -906,7 +902,7 @@ extends Bootstrap
                                 (
                                     $project_ini,
                                     $bootstrap_ini
-                                )    
+                                )
                             )
                         )
                     ),
